@@ -64,7 +64,6 @@
         "pipeline",
         "pointfree",
         "point-free",
-        "scope",
-        "thenable"
+        "scope"
     ]
 }
