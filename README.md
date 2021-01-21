@@ -1,7 +1,7 @@
 # box
 
 [![Build Status](https://github.com/chocolateboy/box/workflows/test/badge.svg)](https://github.com/chocolateboy/box/actions?query=workflow%3Atest)
-[![NPM Version](https://img.shields.io/npm/v/@chocolateboy/box.svg)](https://www.npmjs.org/package/@chocolateboy/box)
+[![NPM Version](https://img.shields.io/npm/v/@chocolatey/box.svg)](https://www.npmjs.org/package/@chocolatey/box)
 
 <!-- TOC -->
 
