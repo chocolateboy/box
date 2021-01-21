@@ -35,7 +35,7 @@
 
 # NAME
 
-box - put a value in a box
+Box - put a value in a box
 
 # FEATURES
 
