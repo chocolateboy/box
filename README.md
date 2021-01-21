@@ -365,7 +365,7 @@ The following NPM scripts are available:
 
 # VERSION
 
-0.0.1
+0.0.2
 
 # AUTHOR
 
@@ -381,7 +381,7 @@ terms of the [Artistic License 2.0](https://www.opensource.org/licenses/artistic
 [arrow functions]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
 [comma operator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator
 [do expressions]: https://github.com/tc39/proposal-do-expressions
-[jsDelivr]: https://cdn.jsdelivr.net/npm/@chocolatey/box
+[jsDelivr]: https://cdn.jsdelivr.net/npm/@chocolatey/box@0.0.2/dist/index.umd.min.js
 [partial application]: https://github.com/tc39/proposal-partial-application
 [pipeline operator]: https://github.com/tc39/proposal-pipeline-operator
-[unpkg]: https://unpkg.com/@chocolatey/box
+[unpkg]: https://unpkg.com/@chocolatey/box@0.0.2/dist/index.umd.min.js

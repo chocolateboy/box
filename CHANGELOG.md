@@ -1,4 +1,4 @@
-## 0.0.2 - TBD
+## 0.0.2 - 2021-01-21
 
 - documentation fix
 
