@@ -9,6 +9,7 @@ const {
 } = require('..')
 
 const identity = value => value
+const inc = value => value + 1
 const noop = () => {}
 
 Object.assign(Assertions.prototype, {
@@ -33,7 +34,8 @@ test('exports', t => {
 
 test('factory', t => {
     t.isBox($(42), 42)
-    t.is($(42, it => it + 1), 43)
+    t.is($(42, inc), 43)
+    t.is($(42, inc), $(42).then(inc))
 
     const counter = $(0, count => () => ++count)
 
@@ -43,10 +45,10 @@ test('factory', t => {
 })
 
 test('Box.of', t => {
-    t.isBox(Box.of(42), 42)
-
     const array = ['foo', 'bar', 'baz', 'quux']
     const boxes = array.map(Box.of)
+
+    t.isBox(Box.of(42), 42)
 
     for (let i = 0; i < array.length; ++i) {
         t.isBox(boxes[i], array[i])
@@ -63,7 +65,7 @@ test('map', t => {
 
     t.not(box2, box)
     t.isBox(box2, '42')
-    t.isBox(box.map(it => it + 1), 43)
+    t.isBox(box.map(inc), 43)
     t.isBox(box.map(identity), 42)
 })
 
@@ -80,7 +82,7 @@ test('tap', t => {
 test('then', t => {
     const box = $(42)
 
-    t.is(box.then(it => it + 1), 43)
+    t.is(box.then(inc), 43)
     t.is(box.then(identity), 42)
     t.is(box.then(identity), box.value())
 })

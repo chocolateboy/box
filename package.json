@@ -57,13 +57,17 @@
         "bind",
         "box",
         "chain",
+        "compose",
+        "composition",
         "container",
+        "flow",
+        "functional",
         "functor",
         "iife",
         "pipe",
         "pipeline",
-        "pointfree",
         "point-free",
-        "scope"
+        "pointfree",
+        "tacit"
     ]
 }

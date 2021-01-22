@@ -14,7 +14,7 @@
   - [Why not?](#why-not)
 - [EXPORTS](#exports)
   - [default](#default)
-  - [Box<T>](#box-class)
+  - [Box&lt;T&gt;](#box-class)
     - [Static Methods](#static-methods)
       - [constructor](#constructor)
       - [Box.of](#boxof)
@@ -24,6 +24,7 @@
       - [then](#then)
       - [value](#value)
 - [DEVELOPMENT](#development)
+- [COMPATIBILITY](#compatibility)
 - [SEE ALSO](#see-also)
 - [VERSION](#version)
 - [AUTHOR](#author)
@@ -63,15 +64,17 @@ const untar = name => $(name)
     .map(it => it.split('.'))
     .tap(it => it.splice(1, 1))
     .then(it => it.join('.'))
+
+untar('package.tar.gz') // "package.gz"
 ```
 
 # DESCRIPTION
 
-Box puts a value in a container which exposes a minimal set of methods to
-facilitate piping the value through a series of functions.
+Box puts a value in a container which exposes a handful of methods to
+facilitate piping values through a series of functions.
 
 It provides a lightweight implementation of the [box pattern][], which allows
-the right-to-left flow of function composition to be declared with the
+the right-to-left flow of function composition to be expressed via the
 left-to-right syntax of method chaining familiar from jQuery, Lodash, promises
 etc.
 
@@ -89,7 +92,7 @@ const fn2 = R.compose(baz, bar, foo)
 ## box
 
 ```javascript
-import $ from '@chocolatey/box
+import $ from '@chocolatey/box'
 
 const fn = value => $(value).map(foo).map(bar).then(baz)
 ```
@@ -110,9 +113,11 @@ the (smart) [pipeline operator][], [do expressions][] and [partial application][
 e.g.:
 
 ```javascript
+import { tap } from 'lodash'
+
 const untar = name =>
     name.split('.')
-        |> tap(it => it.splice(1, 1))
+        |> tap(#, it => it.splice(1, 1))
         |> #.join('.')
 ```
 
@@ -141,14 +146,15 @@ const untar = name =>
 ```javascript
 import $ from '@chocolatey/box'
 
-const box = $(42)                // Box<42>
-const succ = $(42, it => it + 1) // 43
+$(42)               // Box<42>
+$(42, it => it + 1) // 43
 ```
 
 The default export is a function which either takes a value and puts it in a
-box or takes a value and a function and applies the function to the value.
+box (via [`Box.of`](#boxof)) or takes a value and a function and applies the
+function to the value.
 
-The latter provides a convenient shorthand for passing a parameter to an IIFE,
+The latter provides a convenient shorthand for passing an argument to an IIFE,
 e.g.:
 
 <!-- TOC:ignore -->
@@ -180,7 +186,7 @@ const counter = $(0, count => () => ++count)
 ```
 
 <a name="box-class"></a>
-## Box<T>
+## Box&lt;T&gt;
 
 ### Static Methods
 
@@ -227,11 +233,11 @@ const boxes2 = array.map(Box.of)
 ```javascript
 import $ from '@chocolatey/box'
 
-const box = $(42).map(it => it + 1) // Box<43>
+$(42).map(it => it + 1) // Box<43>
 ```
 
-Takes a function which transforms the value inside the box into a new value and
-returns a new box containing the returned value.
+Applies the supplied function to the value and returns a new box containing the
+result.
 
 #### tap
 
@@ -244,7 +250,7 @@ $(42).tap(console.log) // Box<42>
 ```
 
 Applies the supplied function to the value and returns the original box (the
-invocant). Useful to insert side effects, logging etc into a pipeline without
+invocant). Useful to insert side effects, logging etc. into a pipeline without
 changing the value.
 
 #### then
@@ -257,7 +263,7 @@ import $ from '@chocolatey/box'
 $(42).then(it => it + 1) // 43
 ```
 
-Returns the result of applying the supplied function to the value inside the box.
+Returns the result of applying the supplied function to the value.
 
 #### value
 
@@ -266,18 +272,13 @@ Returns the result of applying the supplied function to the value inside the box
 ```javascript
 import $ from '@chocolatey/box'
 
-$(42).map(it => it + 1).value()            // 43
-$(42).map(it => it + 1).value(console.log) // 43
-```
-
-Returns the value inside the box. If an optional function is supplied, it is
-applied to the value before the value is returned. This is similar to
-[`tap`](#tap), except the value is returned rather than the box.
-
-```javascript
 $(42).value()            // 42
 $(42).value(console.log) // 42
 ```
+
+Returns the value. If an optional function is supplied, it is applied to the
+value before the value is returned. This is similar to [`tap`](#tap), except
+the value is returned rather than the box.
 
 # DEVELOPMENT
 
@@ -300,12 +301,17 @@ The following NPM scripts are available:
 
 </details>
 
+# COMPATIBILITY
+
+- [Maintained Node.js versions](https://github.com/nodejs/Release#readme) and compatible browsers
+
 # SEE ALSO
 
 <!-- TOC:ignore -->
 ## Libraries
 
 - [fcf](https://github.com/GianlucaGuarini/fcf) - a functional alternative to control-flow statements such as `if`, `switch` and `while`
+- [fp-ts](https://www.npmjs.com/package/fp-ts) - functional programming in TypeScript
 
 <!-- TOC:ignore -->
 ## Videos

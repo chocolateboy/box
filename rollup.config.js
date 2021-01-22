@@ -55,6 +55,7 @@ export default [
             },
         ]
     },
+
     {
         input: 'src/index.ts',
         plugins: [$tsmin],
@@ -66,7 +67,7 @@ export default [
                 plugins: [$terser, $size],
             },
 
-            // this is just for info: it's not packaged
+            // this is just for information: it's not packaged
             {
                 file: 'dist/index.esm.min.js',
                 format: 'esm',
