@@ -49,137 +49,71 @@ Box - put a value in a box
 # SYNOPSIS
 
 ```javascript
-unraw('/user/repo/raw/master/README.md')
-// => "/user/repo/master/README.md"
-```
-
-<!-- TOC:ignore -->
-## before
-
-```javascript
-const unraw = path => {
-    const steps = path.split('/')
-    steps.splice(3, 1)
-    return steps.join('/')
-}
-```
-
-<!-- TOC:ignore -->
-## after
-
-```javascript
 import $ from '@chocolatey/box'
 
-const unraw = path => $(path.split('/'))
-    .tap(steps => steps.splice(3, 1))
-    .then(steps => steps.join('/'))
+$(42)                    // Box<42>
+$(42).value()            // 42
+$(42).map(it => it + 1)  // Box<43>
+$(42).tap(console.log)   // Box<42>
+$(42).then(it => it + 1) // 43
+$(42, it => it + 1)      // 43
+
+// "*.tar.gz" -> "*.gz"
+const untar = name => $(name)
+    .map(it => it.split('.'))
+    .tap(it => it.splice(1, 1))
+    .then(it => it.join('.'))
 ```
 
 # DESCRIPTION
 
-Box wraps a value in a container and provides some helper methods to facilitate
-common operations on values in a boilerplate-free way.
+Box puts a value in a container which exposes a minimal set of methods to
+facilitate piping the value through a series of functions.
+
+It provides a lightweight implementation of the [box pattern][], which allows
+the right-to-left flow of function composition to be declared with the
+left-to-right syntax of method chaining familiar from jQuery, Lodash, promises
+etc.
+
+<!-- TOC:ignore -->
+## compose
+
+```javascript
+import R from 'ramda'
+
+const fn1 = value => baz(bar(foo(value)))
+const fn2 = R.compose(baz, bar, foo)
+```
+
+<!-- TOC:ignore -->
+## box
+
+```javascript
+import $ from '@chocolatey/box
+
+const fn = value => $(value).map(foo).map(bar).then(baz)
+```
 
 ## Why?
 
-It's mainly useful to simplify and declutter code, replacing imperative
-statements and declarations with a pipeline of transformations which more
-clearly expresses the computation.
+Because:
 
-<!-- TOC:ignore -->
-### Example
+> composition and dot chaining are the same, and dot chaining is more ergonomic
+> in JavaScript
 
-A common pattern that crops up when using ES6+ Maps is assigning and returning
-an updated value. This is easy enough with plain objects, e.g.:
-
-```javascript
-const seen = {}
-const updateStats = key => seen[key] = (seen[key] || 0) + 1
-```
-
-But the same operation is cluttered by boilerplate when working with Maps.
-
-```javascript
-const seen = new Map()
-
-const updateStats = key => {
-    const value = seen.get(key) || 0
-    seen.set(key, value)
-    return value
-}
-```
-
-The extra steps are needed because `Map#set` returns the Map rather than the
-value. This is sometimes useful, but here it's something we need to work
-around. The additional housekeeping obscures the *what* (the update) and
-foregrounds the *how* (the implementation).
-
-<!-- TOC:ignore -->
-### IIFE
-
-We can simplify things and focus on the operation beneath the housekeeping by
-spinning up a scope, e.g. an IIFE, in which to perform it, e.g.:
-
-```javascript
-const seen = new Map()
-
-const updateStats = key => {
-    return (function (value) {
-        seen.set(key, ++value)
-        return value
-    })(seen.get(key) || 0)
-}
-```
-
-With the help of the [comma operator][] and [arrow functions][], this could be
-reduced to:
-
-```javascript
-const updateStats = key => (value => (seen.set(key, ++value), value))(seen.get(key) || 0)
-```
-
-The good news is that we've managed to remove the imperative boilerplate. The
-bad news is that we've managed to replace it with functional boilerplate which
-makes the underlying operation even *less* clear. At least with the imperative
-version, the *order* is clear. Here we see the application of a function long
-before we see what it's operating on, and the simple
-left-to-right/top-to-bottom flow is reversed. This inversion becomes even more
-awkward and inconvenient when there are more steps in a pipeline.
-
-<!-- TOC:ignore -->
-### Box
-
-Box can simplify a case like this by spinning up a scope like the IIFE but
-keeping the value in the scope (by default) so that we can operate on and
-transform it with a chain of method calls in the standard style familiar from
-jQuery, Lodash, promises etc.
-
-```javascript
-const updateStats = key => $(seen.get(key) || 0)
-    .map(it => it + 1)
-    .tap(it => seen.set(key, it))
-    .value()
-```
-
-The [`value`](#value) method behaves like [`tap`](#tap) if a function is
-supplied, so this can be shortened to:
-
-```javascript
-const updateStats = key => $(seen.get(key) || 0)
-    .map(it => it + 1)
-    .value(it => seen.set(key, it))
-```
+— [Brian Lonsdorf](https://frontendmasters.com/courses/hardcore-js-v2/composition-is-dot-chaining/)
 
 ## Why not?
 
-If you're using Babel, much of this decluttering can be done natively with
-features such as the (smart) [pipeline operator][], [do expressions][] and
-[partial application][], e.g.:
+If you're using Babel, pipelines can be written natively with features such as
+the (smart) [pipeline operator][], [do expressions][] and [partial application][],
+e.g.:
 
 ```javascript
-const updateStats = key => (seen.get(key) || 0)
-    |> # + 1
-    |> tap(#, it => seen.set(key, it))
+const untar = name =>
+    name.split('.')
+        |> tap(it => it.splice(1, 1))
+        |> #.join('.')
 ```
 
 If you're already using Lodash/Underscore or similar, you can use their
@@ -188,19 +122,11 @@ built-in methods to implement pipelines, e.g.:
 ```javascript
 import _ from 'lodash'
 
-const updateStats = key => _(seen.get(key) || 0)
-    .thru(it => it + 1)
-    .tap(it => seen.set(key, it))
-    .value()
-```
-
-Alternatively, a dedicated function or method could be used to fix inconvenient
-APIs at the source, e.g. for the `Array#splice` example:
-
-```javascript
-import URI from 'urijs'
-
-const unraw = path => URI(path).segment(2, '').toString()
+const untar = name =>
+    _(name)
+        .split('.')
+        .tap(it => it.splice(1, 1))
+        .join('.')
 ```
 
 # EXPORTS
@@ -215,24 +141,42 @@ const unraw = path => URI(path).segment(2, '').toString()
 ```javascript
 import $ from '@chocolatey/box'
 
-const counter = $(0).then(count => () => ++count)
+const box = $(42)                // Box<42>
+const succ = $(42, it => it + 1) // 43
+```
+
+The default export is a function which either takes a value and puts it in a
+box or takes a value and a function and applies the function to the value.
+
+The latter provides a convenient shorthand for passing a parameter to an IIFE,
+e.g.:
+
+<!-- TOC:ignore -->
+### imperative
+
+```javascript
+const counter = () => {
+    let count = 0
+    return () => ++count
+}
 
 counter() // 1
 counter() // 2
 counter() // 3
 ```
 
-The default export is a function which either takes a value and puts it in a
-box or takes a value and a function and applies the function to the value.
-
-The former is a shorthand for [`Box.of`](#boxof), while the latter is
-equivalent to `Box.of(value).then(fn)`.
+<!-- TOC:ignore -->
+### IIFE
 
 ```javascript
-import $ from '@chocolatey/box'
+const counter = (function (count) { return () => ++count })(0)
+```
 
-const box = $(42)                            // Box<42>
-const counter = $(0, count => () => ++count) // () => number
+<!-- TOC:ignore -->
+### Box
+
+```javascript
+const counter = $(0, count => () => ++count)
 ```
 
 <a name="box-class"></a>
@@ -257,6 +201,8 @@ Creates a new Box instance containing the supplied value.
 - **Type**: `<T>(value: T) => Box<T>`
 
 ```javascript
+import { Box } from '@chocolatey/box'
+
 const box = Box.of(42)              // Box<42>
 const boxes = [1, 2, 3].map(Box.of) // [Box<1>, Box<2>, Box<3>]
 ```
@@ -284,7 +230,7 @@ import $ from '@chocolatey/box'
 const box = $(42).map(it => it + 1) // Box<43>
 ```
 
-Takes a function which transforms a value inside the box into a new value and
+Takes a function which transforms the value inside the box into a new value and
 returns a new box containing the returned value.
 
 #### tap
@@ -306,6 +252,8 @@ changing the value.
 - **Type**: `<U>(fn: (value: T) => U): U`
 
 ```javascript
+import $ from '@chocolatey/box'
+
 $(42).then(it => it + 1) // 43
 ```
 
@@ -316,6 +264,8 @@ Returns the result of applying the supplied function to the value inside the box
 - **Type**: `(fn?: (value: T) => void): T`
 
 ```javascript
+import $ from '@chocolatey/box'
+
 $(42).map(it => it + 1).value()            // 43
 $(42).map(it => it + 1).value(console.log) // 43
 ```
@@ -379,6 +329,7 @@ This is free software; you can redistribute it and/or modify it under the
 terms of the [Artistic License 2.0](https://www.opensource.org/licenses/artistic-license-2.0.php).
 
 [arrow functions]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+[box pattern]: https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/ch08.md
 [comma operator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator
 [do expressions]: https://github.com/tc39/proposal-do-expressions
 [jsDelivr]: https://cdn.jsdelivr.net/npm/@chocolatey/box@0.0.2/dist/index.umd.min.js
