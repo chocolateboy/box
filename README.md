@@ -141,7 +141,7 @@ const untar = name =>
 - **Type**:
   - `<T, R>(value: T, fn: (value: T) => R): R`
   - `<T>(value: T): Box<T>`
-- **Alias**: `$`, `box`
+- **Aliases**: $, box
 
 ```javascript
 import $ from '@chocolatey/box'
@@ -215,13 +215,18 @@ const boxes = [1, 2, 3].map(Box.of) // [Box<1>, Box<2>, Box<3>]
 
 Returns a new [`Box`](#box-class) instance containing the supplied value.
 
-The `of` method is polymorphic, i.e. calling `of` on a Box subclass returns an
-instance of the subclass. It can also be called as a function, in which case
-the constructor defaults to [`Box`](#box-class), i.e. the following are equivalent:
+Note that `of` is a function which returns a Box instance rather than a method
+which returns an instance of its invocant, so the following are equivalent:
 
 ```javascript
-const boxes1 = array.map(it => Box.of(it))
-const boxes2 = array.map(Box.of)
+class MyBox extends Box {} // XXX missing `of` override
+
+const array = [1, 2]
+
+array.map(it => Box.of(it))   // [Box<1>, Box<2>]
+array.map(it => MyBox.of(it)) // [Box<1>, Box<2>]
+array.map(Box.of)             // [Box<1>, Box<2>]
+array.map(MyBox.of)           // [Box<1>, Box<2>]
 ```
 
 ### Instance Methods
@@ -335,7 +340,7 @@ This is free software; you can redistribute it and/or modify it under the
 terms of the [Artistic License 2.0](https://www.opensource.org/licenses/artistic-license-2.0.php).
 
 [arrow functions]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
-[box pattern]: https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/ch08.md
+[box pattern]: https://mostly-adequate.gitbooks.io/mostly-adequate-guide/content/ch08.html
 [comma operator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator
 [do expressions]: https://github.com/tc39/proposal-do-expressions
 [jsDelivr]: https://cdn.jsdelivr.net/npm/@chocolatey/box@1.0.0/dist/index.umd.min.js

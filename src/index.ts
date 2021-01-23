@@ -1,8 +1,11 @@
-export class Box<T> {
-    ['constructor']!: typeof Box;
+interface Factory {
+    <T, R>(value: T, fn: (value: T) => R): R;
+    <T>(value: T): Box<T>;
+}
 
+export class Box<T> {
     static of <T>(value: T) {
-        return new (this || Box)(value)
+        return new Box(value)
     }
 
     private readonly _value: T;
@@ -12,7 +15,7 @@ export class Box<T> {
     }
 
     map <U>(fn: (value: T) => U) {
-        return this.constructor.of(fn(this._value))
+        return (this.constructor as typeof Box).of(fn(this._value))
     }
 
     tap <U>(fn: (value: T) => U): this {
@@ -28,9 +31,7 @@ export class Box<T> {
     }
 }
 
-function factory <T, R>(value: T, fn: (value: T) => R): R
-function factory <T>(value: T): Box<T>
-function factory <T, R>(value: T, fn?: (value: T) => R) {
+const factory: Factory = (value: any, fn?: any) => {
     return fn ? fn(value) : Box.of(value)
 }
 

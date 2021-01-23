@@ -1,3 +1,7 @@
+## 1.1.0 - TBD
+
+- fix/spec `Box.of` to be a function rather than a dual function/method
+
 ## 1.0.0 - 2021-01-23
 
 - documentation tweaks
