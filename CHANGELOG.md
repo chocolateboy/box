@@ -1,4 +1,4 @@
-## 0.0.4 - TBD
+## 1.0.0 - 2021-01-23
 
 - documentation tweaks
 
