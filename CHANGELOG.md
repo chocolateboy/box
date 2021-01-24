@@ -1,4 +1,4 @@
-## 1.1.0 - TBD
+## 1.1.0 - 2021-01-24
 
 - fix/spec `Box.of` to be a function rather than a dual function/method
 
