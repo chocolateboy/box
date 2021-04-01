@@ -1,3 +1,7 @@
+## 1.2.0 - TBD
+
+- relicense: Artistic 2.0 -> MIT
+
 ## 1.1.0 - 2021-01-24
 
 - fix/spec `Box.of` to be a function rather than a dual function/method
