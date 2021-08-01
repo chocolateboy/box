@@ -18,15 +18,15 @@ export class Box<T> {
         return (this.constructor as typeof Box).of(fn(this._value))
     }
 
-    tap <U>(fn: (value: T) => U): this {
+    tap (fn: (value: T) => void): this {
         return fn(this._value), this
     }
 
-    then <U>(fn: (value: T) => U) {
+    then <U>(fn: (value: T) => U): U {
         return fn(this._value)
     }
 
-    value (fn?: (value: T) => void) {
+    value (fn?: (value: T) => void): T {
         return fn && fn(this._value), this._value
     }
 }

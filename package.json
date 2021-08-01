@@ -69,5 +69,6 @@
         "point-free",
         "pointfree",
         "tacit"
-    ]
+    ],
+    "dependencies": {}
 }

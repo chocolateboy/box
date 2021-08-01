@@ -161,10 +161,10 @@ e.g.:
 ### imperative
 
 ```javascript
-const counter = () => {
+const counter = (function () {
     let count = 0
     return () => ++count
-}
+})()
 
 counter() // 1
 counter() // 2
