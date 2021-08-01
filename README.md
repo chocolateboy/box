@@ -39,7 +39,7 @@ Box - put a value in a box
 # FEATURES
 
 - no dependencies
-- &lt; 180 B minified + gzipped
+- &lt; 170 B minified + gzipped
 - fully typed (TypeScript)
 - CDN builds (UMD) - [jsDelivr][], [unpkg][]
 

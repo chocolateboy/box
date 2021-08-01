@@ -69,7 +69,7 @@ export default [
 
             // this is just for information: it's not packaged
             {
-                file: 'dist/index.esm.min.js',
+                file: 'dist/data/index.esm.min.js',
                 format: 'esm',
                 plugins: [$terser, $size],
             },
