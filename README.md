@@ -109,7 +109,7 @@ Because:
 ## Why not?
 
 If you're using Babel, pipelines can be written natively with features such as
-the (smart) [pipeline operator][], [do expressions][] and [partial application][],
+the [pipeline operator][], [do expressions][] and [partial application][],
 e.g.:
 
 ```javascript
@@ -246,7 +246,7 @@ result.
 
 #### tap
 
-- **Type**: `<U>(fn: (value: T) => U): this`
+- **Type**: `(fn: (value: T) => void): this`
 
 ```javascript
 import $ from '@chocolatey/box'
